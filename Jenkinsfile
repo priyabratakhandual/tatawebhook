@@ -59,7 +59,6 @@ stages {
 
                 mkdir -p /home/ubuntu/tata-webhook
 
-                # Create/update docker-compose
                 cat <<EOF > /home/ubuntu/tata-webhook/docker-compose.yml
                 version: '3.8'
 
