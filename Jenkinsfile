@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 environment {
     registry = "priyabratakhandual/tata-webhook"
     registryCredential = 'dockerhub-cred-id'
