@@ -57,6 +57,9 @@ EOF
 
                 cd /var/lib/jenkins/tata-webhook
 
+                echo "==== docker-compose.yml ====" 
+                cat docker-compose.yml
+
                 docker pull priyabratakhandual/tata-webhook:prod-${BUILD_NUMBER}
 
                 docker-compose down || true
