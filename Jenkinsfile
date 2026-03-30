@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 environment {
     registry = "priyabratakhandual/tata-webhook"
     registryCredential = 'dockerhub-cred-id'
@@ -35,51 +34,36 @@ stages {
         }
     }
 
-    stage('Deploy Nginx Config') {
-        steps {
-            script {
-                sh """
-                echo "Deploying Nginx config..."
-
-                sudo cp nginx/tata-webhook /etc/nginx/sites-available/tata-webhook || true
-                sudo ln -sf /etc/nginx/sites-available/tata-webhook /etc/nginx/sites-enabled/tata-webhook
-
-                sudo nginx -t
-                sudo systemctl reload nginx
-                """
-            }
-        }
-    }
-
     stage('Deploy Application') {
         steps {
             script {
-                sh """
-                echo "Deploying application ${IMAGE_TAG}"
+                sh '''
+                echo "Deploying application"
 
                 mkdir -p /home/ubuntu/tata-webhook
 
                 cat <<EOF > /home/ubuntu/tata-webhook/docker-compose.yml
-                version: '3.8'
 
-                services:
-                  tata-webhook:
-                    image: ${registry}:${IMAGE_TAG}
-                    container_name: tata-webhook
-                    ports:
-                      - "127.0.0.1:8000:8000"
-                    restart: always
-                EOF
+version: '3.8'
+
+services:
+tata-webhook:
+image: priyabratakhandual/tata-webhook:prod-${BUILD_NUMBER}
+container_name: tata-webhook
+ports:
+- "127.0.0.1:8000:8000"
+restart: always
+EOF
 
                 cd /home/ubuntu/tata-webhook
 
-                docker pull ${registry}:${IMAGE_TAG}
+                docker pull priyabratakhandual/tata-webhook:prod-${BUILD_NUMBER}
 
                 docker-compose down || true
                 docker-compose up -d
 
                 docker image prune -f
-                """
+                '''
             }
         }
     }
@@ -87,12 +71,11 @@ stages {
 
 post {
     success {
-        echo "Deployment successful: ${IMAGE_TAG}"
+        echo "Deployment successful"
     }
     failure {
         echo "Deployment failed"
     }
 }
-```
 
 }
