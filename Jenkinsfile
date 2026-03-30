@@ -40,9 +40,9 @@ stages {
                 sh '''
                 echo "Deploying application"
 
-                mkdir -p /home/ubuntu/tata-webhook
+                mkdir -p /var/lib/jenkins/tata-webhook
 
-                cat <<EOF > /home/ubuntu/tata-webhook/docker-compose.yml
+                cat <<EOF > /var/lib/jenkins/tata-webhook/docker-compose.yml
 
 version: '3.8'
 
@@ -55,7 +55,7 @@ ports:
 restart: always
 EOF
 
-                cd /home/ubuntu/tata-webhook
+                cd /var/lib/jenkins/tata-webhook
 
                 docker pull priyabratakhandual/tata-webhook:prod-${BUILD_NUMBER}
 
