@@ -34,10 +34,23 @@ pipeline {
             }
         }
 
+        stage('Deploy Nginx Config') {
+            steps {
+                sh '''
+echo "Deploying Nginx config"
+
+sudo cp nginx/tata-webhook /etc/nginx/sites-available/tata-webhook || true
+sudo ln -sf /etc/nginx/sites-available/tata-webhook /etc/nginx/sites-enabled/tata-webhook
+
+sudo nginx -t
+sudo systemctl reload nginx
+'''
+            }
+        }
+
         stage('Deploy Application') {
             steps {
-                script {
-                    sh '''
+                sh '''
 echo "Deploying application"
 
 mkdir -p /var/lib/jenkins/tata-webhook
@@ -62,7 +75,6 @@ docker-compose up -d
 
 docker image prune -f
 '''
-                }
             }
         }
     }
